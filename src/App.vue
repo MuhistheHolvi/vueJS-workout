@@ -1,19 +1,24 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+      <ul>
+        <li v-for="(sound, animal) in animals" :key="animal"> Animal {{animal}} says hello world as: {{sound}}.</li>
+      </ul>    
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
+  export default {
+    name: 'App',
+    data() {
+      return {
+        animals: {
+          dog: "HowHow",
+          cat: "MeowMeow",
+          cow: "MooMoo",
+        }
+      }
+    }
   }
-}
 </script>
 
 <style>
@@ -24,5 +29,9 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+#div {
+  height: 200px;
+  width: 50%;
 }
 </style>
