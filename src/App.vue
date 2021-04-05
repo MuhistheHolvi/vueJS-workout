@@ -1,11 +1,37 @@
 <template>
-  <div id="app">
-    <button v-on:click="toast">Start toasting</button>
-    <ul v-show="showCountDown">
-      <p>Toasting</p>
-      <li v-for="number in countDown" :key="number">{{ number }}</li>
+  <div id="app" @hover="hideButtons">
+    <h2>Planets concoured</h2>
+    <ul>
+      <li
+        v-for="world in concqueredWorlds"
+        :key="world"
+        @mouseover="deleteButtonWorld = world"
+        @mouseleave="deleteButtonWorld = null"
+      >
+        {{ world }} :
+        <button @click="removeWorld(world)" v-show="showButton(world)">
+          Retreat from world
+        </button>
+      </li>
     </ul>
-    <p v-show="toastingDone">Toasting done, enjoy your toast</p>
+    <h2>Free planets</h2>
+    <ul>
+      <li
+        v-for="world in freeWorlds"
+        :key="world"
+        @mouseover="deleteButtonWorld = world"
+        @mouseleave="deleteButtonWorld = null"
+      >
+        {{ world }}
+        <button @click="invadeWorld(world)" v-show="showButton(world)">
+          Invade world
+        </button>
+      </li>
+    </ul>
+    <h2>Planetary logs</h2>
+    <ul>
+      <li v-for="log in planetaryLogs" :key="log">{{ log }}</li>
+    </ul>
   </div>
 </template>
 
@@ -14,33 +40,55 @@ export default {
   name: "App",
   data() {
     return {
-      countDown: 0,
-      toastingDone: false,
-      showCountDown: false,
+      concqueredWorlds: ["Earth"],
+      freeWorlds: [
+        "Saturn",
+        "Uranus",
+        "Neptune",
+        "Moon",
+        "Mercury",
+        "Mars",
+        "Jupitor",
+        "Venus",
+      ],
+      deleteButtonWorld: null,
+      planetaryLogs: [],
     };
   },
   methods: {
-    toast() {
-      setInterval(() => {
-        const isToast = isBreadToast(this.countDown);
-        if (isToast) {
-          this.toastingDone = true;
-        } else {
-          this.countDown++;
-          this.showCountDown = true;
-        }
-      }, 1000);
+    log(message) {
+      this.planetaryLogs.push(message);
+    },
+    removeWorld(world) {
+      if (this.freeWorlds.includes(world)) {
+        this.log(`Trying to remove ${world} failed, free world.`);
+      } else {
+        this.hideButtons();
+        this.concqueredWorlds = this.concqueredWorlds.filter(
+          (item) => item != world
+        );
+        this.freeWorlds.push(world);
+        this.log(`Removed the world ${world}.`);
+      }
+    },
+    showButton(world) {
+      return this.deleteButtonWorld == world;
+    },
+    hideButtons() {
+      this.deleteButtonWorld = null;
+    },
+    invadeWorld(world) {
+      if (this.freeWorlds.includes(world)) {
+        this.hideButtons();
+        this.concqueredWorlds.push(world);
+        this.freeWorlds = this.freeWorlds.filter((item) => item != world);
+        this.log(`The world ${world} was invaded.`);
+      } else {
+        this.log(`Failed in invading ${world}, the world is already invaded.`);
+      }
     },
   },
 };
-function isBreadToast(counter) {
-  if (counter == 10) {
-    return true;
-  } else {
-    counter++;
-    return false;
-  }
-}
 </script>
 
 <style>
@@ -55,5 +103,8 @@ function isBreadToast(counter) {
 #div {
   height: 200px;
   width: 50%;
+}
+button {
+  background-color: #f44336;
 }
 </style>
